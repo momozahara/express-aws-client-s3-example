@@ -1,0 +1,9 @@
+{
+  "verbose": true,
+  "execMap": {
+    "ts": "eslint --ext .ts src/ && ts-node src/main.ts"
+  },
+  "watch": [
+    "src/*.ts"
+  ]
+}
