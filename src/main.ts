@@ -77,6 +77,11 @@ app.use("/static/:filename", (req, res) => {
 
 app.post("/upload", upload.single("image"), (req, res) => {
   if (req.file !== undefined) {
+    const allowTypes = ["image/png", "image/jpeg"];
+    if (!allowTypes.includes(req.file.mimetype)) {
+      return res.sendFile(path.join(__workdir, "400.html"));
+    }
+
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     const filename =
       req.file.fieldname +
