@@ -5,6 +5,7 @@ import {
   S3Client,
   PutObjectCommand,
   GetObjectCommand,
+  ListObjectsCommand,
 } from "@aws-sdk/client-s3";
 
 import express from "express";
@@ -31,6 +32,27 @@ const upload = multer({
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__workdir, "index.html"));
+});
+
+app.get("/lists", (req, res) => {
+  const command = new ListObjectsCommand({
+    Bucket: bucket,
+  });
+  client.send(command).then(
+    (data) => {
+      if (data.Contents) {
+        data.Contents.forEach((element) => {
+          res.write(
+            `<a style="display: block" href="/static/${element.Key}">${element.Key}</a>`,
+          );
+        });
+      }
+      res.end();
+    },
+    () => {
+      res.sendFile(path.join(__workdir, "400.html"));
+    },
+  );
 });
 
 app.use("/static/:filename", (req, res) => {
